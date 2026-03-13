@@ -1,0 +1,61 @@
+{
+  "name": "@grid-canvas/react",
+  "version": "0.1.0",
+  "description": "High-performance React grid canvas with drag-and-drop, pan/zoom, and extensible layout",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "@grid-canvas/core": "workspace:*",
+    "zustand": "^4.5.0",
+    "fast-equals": "^5.0.0",
+    "clsx": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  },
+  "sideEffects": ["*.css"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/grid-canvas.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/anthropics/grid-canvas#readme",
+  "keywords": [
+    "react",
+    "grid",
+    "layout",
+    "canvas",
+    "drag-and-drop",
+    "resize",
+    "pan",
+    "zoom",
+    "dashboard",
+    "infinite-canvas"
+  ]
+}

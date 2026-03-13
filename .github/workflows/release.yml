@@ -1,0 +1,101 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test -- --run
+
+      - name: Check NPM_TOKEN
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "::error::NPM_TOKEN secret is not set. Add it in repo Settings → Secrets → Actions"
+            exit 1
+          fi
+
+      # Publish @grid-canvas/core (must be first - react depends on it)
+      - name: Publish @grid-canvas/core
+        run: pnpm publish --no-git-checks --access public
+        working-directory: packages/core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Publish @grid-canvas/react
+      - name: Publish @grid-canvas/react
+        run: pnpm publish --no-git-checks --access public
+        working-directory: packages/react
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Generate changelog from commits since last tag (delimiter avoids breakage from commit msg chars)
+      - name: Generate release notes
+        id: changelog
+        run: |
+          PREV_TAG=$(git tag --sort=-v:refname | head -n 2 | tail -n 1)
+          if [ -z "$PREV_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"- %s (%h)" HEAD)
+          else
+            COMMITS=$(git log --pretty=format:"- %s (%h)" "${PREV_TAG}..HEAD")
+          fi
+          VERSION="${{ github.ref_name }}"
+          VERSION_NUM="${VERSION#v}"
+          DELIM="RELEASE_NOTES_$(date +%s)"
+          {
+            echo "notes<<${DELIM}"
+            echo "## What's Changed"
+            echo ""
+            echo "$COMMITS"
+            echo ""
+            echo "## Packages"
+            echo ""
+            echo "| Package | Version |"
+            echo "|---------|---------|"
+            echo "| \`@grid-canvas/core\` | \`${VERSION_NUM}\` |"
+            echo "| \`@grid-canvas/react\` | \`${VERSION_NUM}\` |"
+            echo ""
+            echo "### Install"
+            echo ""
+            echo "\`\`\`bash"
+            echo "npm install @grid-canvas/react@${VERSION_NUM}"
+            echo "\`\`\`"
+            echo "${DELIM}"
+          } >> "$GITHUB_OUTPUT"
+
+      # Create GitHub Release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.notes }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}

@@ -1,0 +1,23 @@
+{
+  "name": "grid-canvas-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "build:core": "pnpm --filter @grid-canvas/core build",
+    "build:react": "pnpm --filter @grid-canvas/react build",
+    "dev": "pnpm --filter docs dev",
+    "test": "vitest",
+    "clean": "pnpm -r clean",
+    "release": "./scripts/release.sh",
+    "release:patch": "./scripts/release.sh patch",
+    "release:minor": "./scripts/release.sh minor",
+    "release:major": "./scripts/release.sh major"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "jsdom": "^28.1.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}
