@@ -3,8 +3,12 @@ name: CI
 on:
   push:
     branches: [main]
+    paths:
+      - 'packages/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'packages/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
