@@ -14,7 +14,9 @@
     },
     "./styles.css": "./dist/styles.css"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -38,14 +40,16 @@
     "tsup": "^8.0.0",
     "typescript": "^5.4.0"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anthropics/grid-canvas.git",
+    "url": "https://github.com/coolzwc/grid-canvas.git",
     "directory": "packages/react"
   },
-  "homepage": "https://github.com/anthropics/grid-canvas#readme",
+  "homepage": "https://github.com/coolzwc/grid-canvas#readme",
   "keywords": [
     "react",
     "grid",

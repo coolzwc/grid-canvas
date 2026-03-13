@@ -59,7 +59,7 @@ export function App() {
         </span>
         <div style={{ flex: 1 }} />
         <a
-          href="https://github.com/grid-canvas/grid-canvas"
+          href="https://github.com/coolzwc/grid-canvas"
           style={{ fontSize: 13, color: '#64748b', textDecoration: 'none' }}
           target="_blank"
           rel="noopener noreferrer"
