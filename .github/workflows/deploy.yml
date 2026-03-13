@@ -32,7 +32,11 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - name: Build docs for GitHub Pages
+        run: pnpm build
+        env:
+          # 与 Pages 的 URL 一致：https://<user>.github.io/<repo>/
+          BASE_PATH: /${{ github.event.repository.name }}/
 
       - uses: actions/upload-pages-artifact@v3
         with:
